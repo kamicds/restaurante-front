@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import type { LoginData } from "../../types/auth.types";
 import { useNavigate } from "react-router-dom";
-import { loginRequest } from "../../services/authService";
+import useAuth from "../../hooks/useAuth";
+
 
 interface LoginFormData {
     email: string;
@@ -10,8 +11,9 @@ interface LoginFormData {
 }
 
 export function LoginPage(){
-    const[serverError, setServerError] = useState("");
     const navigate = useNavigate();
+    const {signIn} = useAuth();
+    const[serverError, setServerError] = useState("");
     const{
         register,
         handleSubmit,
@@ -22,7 +24,7 @@ export function LoginPage(){
     async function handleLogin(data: LoginData){
         try{
             setServerError("");
-            await loginRequest(data);
+            await signIn(data);
             navigate("/app/dashboard");
         } catch(error){
             setServerError("Erro login");

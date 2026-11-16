@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 type UserRole = "admin" | "user";
 
@@ -8,22 +9,16 @@ interface ProtectedRouteProps {
     allowedRoles: UserRole[];
 }
 
-const authMock = {
-    isAuthenticated: true,
-    user: {
-        name: "Usuário Test",
-        role: "admin" as UserRole,
-    },
-
-};
 
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
+
+    const { user, isAuthenticated } = useAuth();
     
-    if(!authMock.isAuthenticated){
+    if(!isAuthenticated){
         return <Navigate to="/login" replace/>;
     } 
 
-    if(!allowedRoles.includes(authMock.user.role)){
+    if(!user || !allowedRoles.includes(user.role)){
          return <Navigate to="/Unauthorized" replace/>;
 
     }
